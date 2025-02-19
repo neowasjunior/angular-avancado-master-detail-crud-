@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable, throwError } from 'rxjs';
-import {map, catchError, flatMap } from 'rxjs/operator';
+import { map, catchError } from 'rxjs/operators';
 
 import { Category } from './category.model';
-import { element } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -24,14 +23,14 @@ export class CategoryService {
     )
   }
 
-  getById(): Observable<Category> {
-    const url = '$(this.apiPath}/${id}';
-
-    return this.http.get(url).pipe(
+  getById(id: number): Observable<Category> {
+    const url = `${this.apiPath}/${id}`;
+    return this.http.get<Category>(url).pipe(
       catchError(this.handleError),
       map(this.jsonDataToCategory)
-    )
+    );
   }
+  
 
   create(category: Category): Observable<Category> {
     return this.http.post(this.apiPath, category).pipe(
@@ -41,7 +40,7 @@ export class CategoryService {
   }
     
   update(category: Category): Observable<Category> {
-    const url = '$(this.apiPath}/${category.id}';
+    const url = `$(this.apiPath}/${category.id}`;
 
     return this.http.put(url, category).pipe(
       catchError(this.handleError),
@@ -50,7 +49,7 @@ export class CategoryService {
   }
 
   delete(id: number): Observable<any> {
-      const url = '$(this.apiPath}/${id}';
+      const url = `$(this.apiPath}/${id}`;
   
       return this.http.delete(url).pipe(
         catchError(this.handleError),
@@ -62,7 +61,7 @@ export class CategoryService {
 
   private jsonDataToCategories(jsonData: any[]): Category[] {
     const categories: Category[] = [];
-    jsonData.forEach(element => categories.push(element as Category));
+    jsonData.forEach((element: any) => categories.push(element as Category));
     return categories;
   }
 
